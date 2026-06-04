@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitV 客户全生命周期 · 业务盘点（思维导图）</title>
+<style>
+  :root{
+    --brand:#325bf6; --brand-d:#254ad5; --brand-l:#6b8cff;
+    --nav:#0c142e; --ok:#18b451; --bad:#fa4d4d; --gold:#C9A24C;
+    --bg:#f9f9fd; --line:#e0e0e0; --muted:#6b7280; --ink:#121213;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,sans-serif;color:var(--ink);background:var(--bg)}
+  header{background:var(--nav);color:#fff;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  header .title{font-size:17px;font-weight:800;letter-spacing:.3px}
+  header .title small{font-weight:500;opacity:.65;font-size:12px;margin-left:8px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px}
+  .legend span{display:inline-flex;align-items:center;gap:4px;opacity:.92}
+  .toolbar{padding:8px 22px;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .toolbar b{color:var(--nav)}
+  .toolbar .tip{margin-left:auto;color:var(--brand-d);font-weight:600}
+  .mapwrap{position:absolute;top:96px;left:0;right:0;bottom:0}
+  .markmap{width:100%;height:100%}
+  .markmap > svg{width:100%;height:100%;display:block}
+  .markmap-node text{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-weight:600}
+  footer{position:fixed;bottom:0;left:0;right:0;background:rgba(12,20,46,.92);color:#fff;font-size:11px;padding:6px 22px;display:flex;justify-content:space-between;opacity:.92}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">BitV 客户全生命周期 · 业务盘点 <small>思维导图 · 分支可折叠 / 缩放 / 拖动</small></div>
+  <div class="legend">
+    <span>🎁 邀请奖励触点</span>
+    <span>✅ 安全 / 基线增项</span>
+    <span>🔒 强制环节</span>
+  </div>
+</header>
+<div class="toolbar">
+  <b>操作：</b> 点节点左侧圆点 → 折叠 / 展开分支 · 鼠标滚轮 → 缩放 · 按住拖动 → 平移
+  <span class="tip">默认展开 2 层，深层分支已折叠，点击展开</span>
+</div>
+
+<div class="mapwrap">
+  <div class="markmap">
+    <script type="text/template">
+---
+markmap:
+  initialExpandLevel: 2
+  colorFreezeLevel: 2
+  maxWidth: 320
+  spacingVertical: 8
+  spacingHorizontal: 88
+  paddingX: 14
+  color:
+    - "#325bf6"
+    - "#18b451"
+    - "#254ad5"
+    - "#6b8cff"
+    - "#C9A24C"
+    - "#fa4d4d"
+---
+
+# BitV 客户全生命周期
+
+## 1 · 获客 / 邀请 🎁
+### 渠道来源
+#### 自然流量（应用商店 / SEO / 官网）
+#### KOL 推广 🎁
+#### 老带新邀请 🎁
+### 邀请落地页
+#### Web：链接 ?ref 自动带码（确定性归因）🎁
+#### App：点链接 → 跳应用商店 → 安装后手填邀请码 🎁
+### 投放素材
+#### 邀请链接
+#### 邀请海报
+#### 社交媒体分享
+
+## 2 · 注册 / 登录
+### 注册
+#### 手机号 / 邮箱注册
+#### 验证码校验
+#### 设置登录密码
+#### 填写邀请码（App 端）🎁
+### 登录
+#### 账号密码登录
+#### Passkey 无密码登录 ✅
+#### 2FA 双重验证
+### 找回密码
+#### 验证身份（手机 / 邮箱 / 2FA）
+#### 重置密码
+
+## 3 · 开户（KYC + 入金合一）🔒
+### 实名认证 KYC
+#### 证件上传（身份证 / 护照）
+#### 人脸识别活体
+#### 地址证明
+### 风险测评 / 适当性
+### 强制入金 ¥10,000 HKD 🔒
+#### 法币入金
+### 开户即发奖（模板 A 基线）🎁
+#### 邀请者须先开户才能邀请 🎁
+
+## 4 · 资产操作
+### 充值
+#### 法币充值
+#### 数字资产充币
+### 交易
+#### 现货 买 / 卖
+#### 行情 / K 线
+#### 首笔交易任务奖 🎁
+### 提币 / 出金
+#### 法币出金
+#### 链上提币
+#### 地址管理 / 白名单
+#### 出金免手续费券
+
+## 5 · 增值 / 理财
+### 理财产品
+#### 活期 / 定期 / 结构化
+### 体验金 / 体验券（理财专属，非交易奖励）
+### 收益领取
+
+## 6 · 留存 / 激励 🎁
+### 奖励中心（任务聚合）
+#### 新用户任务
+#### 邀请好友 🎁
+### 活动中心
+#### 进行中
+#### 我参与的
+#### 已过期
+### 卡券中心
+#### 未使用（可用 / 冻结期）
+#### 已使用
+#### 已过期
+### 邀请奖励状态机 🎁
+#### pending → qualified → holding → claimable → issued
+#### 冻结期 T+N / 入金维持期
+#### 过期 / 风控拨回 clawback
+
+## 7 · 账户安全
+### Passkey（WebAuthn / FIDO2）✅
+### 2FA / 资金密码
+### 登录历史 / 设备管理
+### 反欺诈三闸 🎁
+#### 唯一性闸：绑唯一 KYC 自然人
+#### 自荐闸：拦同证件 / 付款源 / 设备 / IP
+#### 冻结闸：holding 窗口
+
+## 8 · 客户服务
+### 智能客服 + 转人工
+### 工单 / 奖励申诉
+### FAQ / 活动规则
+
+## 9 · 流失 / 召回
+### 流失识别
+#### 开户未充币
+#### 30 日未交易
+### 召回触达
+#### 推送 / 短信 / 邮件
+### 召回激励（手续费优惠券）🎁
+
+## 10 · 注销 / 退出
+### 申请注销（人工审核，不可逆）
+### 资产清退
+### 数据合规留存
+    </script>
+  </div>
+</div>
+
+<footer>
+  <span>BitV · 邀请奖励项目 · 生命周期盘点 v1（独立审阅件，确认后整合进主原型）</span>
+  <span>🎁 标注处 = 本次「邀请奖励」功能落点</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.18"></script>
+</body>
+</html>

@@ -103,7 +103,7 @@
 <header class="top">
   <div class="logo">b</div>
   <h1>bitV 邀请奖励系统 · 交互原型</h1>
-  <div class="meta">v0.2 · 2026-06-03</div>
+  <div class="meta">v0.5 · 2026-06-04 · 含活动/卡券中心 + 生命周期导图</div>
 </header>
 <div class="wrap">
   <nav class="side">
@@ -112,6 +112,8 @@
     <a data-s="invite">② 我的邀请页</a>
     <a data-s="reward">③ 奖励中心 · 状态</a>
     <a data-s="task">④ 任务中心</a>
+    <a data-s="campaign">④ᵃ 活动中心 · 三态</a>
+    <a data-s="vouchers">④ᵇ 卡券中心 · 状态</a>
     <div class="grp">Web 端 · 客户生命周期</div>
     <a data-s="landing">⑤ 邀请落地页</a>
     <a data-s="webreg">⑥ Web 注册 · 自动填码</a>
@@ -297,6 +299,108 @@
         <div class="stepline">同一邀请码可绑不同任务（规则模板），用户视角即「任务」</div>
         <div class="stepline">模板 A（HashKey 式低门槛）冲量；模板 B（OSL 式入金留存）保质</div>
         <div class="stepline">上限/预算实时显示，防超发</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ᵃ 活动中心 -->
+  <section class="screen" id="campaign">
+    <h2><span class="tag">App</span>④ᵃ 活动中心 · 进行中 / 我参与的 / 已过期</h2>
+    <div class="sub">所有运营活动的聚合入口（对标 HashKey 活动 + 任务）。一个活动可挂多个邀请码 / 规则模板。</div>
+    <div class="row">
+      <div class="phone"><div class="notch"></div><div class="pbody">
+        <div class="pbar"><span class="back">‹</span> 活动中心</div>
+        <div class="pcontent">
+          <div style="display:flex;gap:16px;border-bottom:1px solid var(--line);margin:0 0 10px;font-size:13px">
+            <span style="font-weight:700;color:var(--brand);border-bottom:2px solid var(--brand);padding:6px 0">进行中</span>
+            <span style="color:var(--muted);padding:6px 0">我参与的</span>
+            <span style="color:var(--muted);padding:6px 0">已过期</span>
+          </div>
+          <div class="card hl">
+            <div style="display:flex;justify-content:space-between"><b style="color:var(--brand-d)">新客拉新冲刺</b><span class="badge b-ok">进行中</span></div>
+            <div style="font-size:11px;color:var(--muted);margin:6px 0">好友完成开户，双方各得 ¥30 手续费优惠券 · 模板A</div>
+            <div style="font-size:10px;color:var(--brand-d)">剩 12 天 · 名额 7/10</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between"><b>优质好友 · 入金留存</b><span class="badge b-ok">进行中</span></div>
+            <div style="font-size:11px;color:var(--muted);margin:6px 0">好友入金 ≥¥10,000 维持 30 日 → 你得 ¥188 券 · 模板B</div>
+            <div style="font-size:10px;color:var(--muted)">长期 · 冻结期 T+30 防薅</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between"><b>限时交易奖励</b><span class="badge b-wait">即将开始</span></div>
+            <div style="font-size:11px;color:var(--muted);margin:6px 0">活动期内交易量 ≥1,000 USD 得 100 HKD 券</div>
+            <div style="font-size:10px;color:var(--muted)">2026/06/10 开始</div>
+          </div>
+        </div>
+        <div class="ptab"><div><span class="ic">🏠</span>首页</div><div><span class="ic">📈</span>行情</div><div class="on"><span class="ic">🎁</span>活动</div><div><span class="ic">👤</span>我的</div></div>
+      </div></div>
+      <div style="flex:1;min-width:280px">
+        <div class="sec-t">活动三态 ↔ 数据</div>
+        <table class="t">
+          <tr><th>Tab</th><th>含义</th><th>来源</th></tr>
+          <tr><td><span class="badge b-ok">进行中</span></td><td>当前可参与，在有效期内</td><td>campaign.status=active 且 now∈[start,end]</td></tr>
+          <tr><td>我参与的</td><td>用户已绑定该活动邀请码 / 已触发任务</td><td>join(user, campaign) 存在记录</td></tr>
+          <tr><td><span class="badge b-bad">已过期</span></td><td>活动结束，仅看历史与已得奖励</td><td>now &gt; end 或 status=closed</td></tr>
+        </table>
+        <div class="stepline">活动 = 容器：挂规则模板（A/B）+ 邀请码 + 预算上限 + 时间窗</div>
+        <div class="stepline">「我参与的」聚合该用户在各活动的进度，避免奖励散落</div>
+        <div class="note">运营在后台（⑰）新建活动→选模板→设预算/时间→生成专属码，前台即现于「进行中」。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ᵇ 卡券中心 -->
+  <section class="screen" id="vouchers">
+    <h2><span class="tag">App</span>④ᵇ 卡券中心 · 未使用 / 已使用 / 已过期</h2>
+    <div class="sub">用户所有卡券的钱包（对标 HashKey「我的卡券」）。券种见 ③ 校准表；状态对应 PRD 7.3。</div>
+    <div class="row">
+      <div class="phone"><div class="notch"></div><div class="pbody">
+        <div class="pbar"><span class="back">‹</span> 我的卡券</div>
+        <div class="pcontent">
+          <div style="display:flex;gap:14px;border-bottom:1px solid var(--line);margin:0 0 10px;font-size:13px">
+            <span style="font-weight:700;color:var(--brand);border-bottom:2px solid var(--brand);padding:6px 0">未使用 <b>3</b></span>
+            <span style="color:var(--muted);padding:6px 0">已使用</span>
+            <span style="color:var(--muted);padding:6px 0">已过期</span>
+          </div>
+          <div class="card" style="border:1px dashed var(--brand);position:relative">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><b style="color:var(--brand-d);font-size:15px">¥30</b> <span style="font-size:11px;color:var(--muted)">手续费优惠券</span></div>
+              <span class="badge b-ok">可用</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">邀请好友达标得 · 抵交易手续费 · 不可提现 · 有效期 365 天</div>
+          </div>
+          <div class="card" style="border:1px dashed var(--ok)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><b style="color:var(--ok);font-size:15px">¥20</b> <span style="font-size:11px;color:var(--muted)">手续费优惠券</span></div>
+              <span class="badge b-ok">可用</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">首笔充值任务得 · 有效期至 2026/12/31</div>
+          </div>
+          <div class="card" style="border:1px dashed var(--line)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><b style="font-size:15px">¥50</b> <span style="font-size:11px;color:var(--muted)">邀请奖 · 冻结期</span></div>
+              <span class="badge b-hold">冻结期 T+5</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">反欺诈校验中，5 天后转「可用」</div>
+          </div>
+          <div class="note" style="margin-top:8px">点券 → 去交易页自动抵扣；冻结期券不可用，到期自动释放或回收。</div>
+        </div>
+        <div class="ptab"><div><span class="ic">🏠</span>首页</div><div><span class="ic">📈</span>行情</div><div class="on"><span class="ic">🎁</span>卡券</div><div><span class="ic">👤</span>我的</div></div>
+      </div></div>
+      <div style="flex:1;min-width:280px">
+        <div class="sec-t">卡券状态机（PRD 7.3）</div>
+        <table class="t">
+          <tr><th>分段</th><th>状态</th><th>说明</th></tr>
+          <tr><td rowspan="2">未使用</td><td><span class="badge b-ok">可用</span> claimable/issued</td><td>已发放、风控通过，可抵扣</td></tr>
+          <tr><td><span class="badge b-hold">冻结期</span> holding</td><td>反欺诈窗口内，暂不可用</td></tr>
+          <tr><td>已使用</td><td>redeemed</td><td>已抵扣手续费 / 已核销</td></tr>
+          <tr><td>已过期</td><td><span class="badge b-bad">expired</span></td><td>超有效期未用，自动失效</td></tr>
+        </table>
+        <div class="sec-t">券种（呼应 ③ 校准）</div>
+        <div class="stepline">手续费优惠券：抵交易手续费，不可提现（v1 主用）</div>
+        <div class="stepline">现金券 / VA：可提，v2 解冻后于「出金」提取</div>
+        <div class="stepline">体验券：理财专属，不在邀请奖励内</div>
+        <div class="note">卡券中心仅「钱包」；获取入口在 ③ 奖励中心 / ④ᵃ 活动中心。</div>
       </div>
     </div>
   </section>
@@ -722,8 +826,13 @@
 
   <!-- ⑬ 生命周期 -->
   <section class="screen" id="lifecycle">
-    <h2><span class="tag">逻辑</span>⑱ 客户生命周期功能地图</h2>
-    <div class="sub">按注册登录主流程铺开的全生命周期功能（🎁 = 邀请奖励嵌入点）。注意：实名认证（KYC）与入金在 BitV 合一为「开户」（见 PRD §2）。本原型已覆盖 14 屏，对应「原型屏」列。</div>
+    <h2><span class="tag">逻辑</span>⑱ 客户生命周期 · 业务盘点导图</h2>
+    <div class="sub">业务方要的全生命周期业务盘点图（思维导图）：点节点圆点折叠/展开、滚轮缩放、拖动平移。🎁=邀请奖励落点 / ✅=安全增项 / 🔒=强制环节。下方表为「功能 ↔ 原型屏」映射。</div>
+    <div style="border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:8px;box-shadow:0 2px 10px rgba(12,20,46,.06)">
+      <iframe src="lifecycle.html" title="客户生命周期思维导图" style="width:100%;height:560px;border:0;display:block"></iframe>
+    </div>
+    <div style="margin:0 0 16px"><a href="lifecycle.html" target="_blank" style="font-size:12px;color:var(--brand-d);font-weight:600;text-decoration:none">↗ 新窗口全屏打开思维导图</a></div>
+    <div class="sec-t">功能 ↔ 原型屏 映射</div>
     <table class="t">
       <tr><th>阶段</th><th>功能</th><th>邀请奖励嵌入</th><th>原型屏</th></tr>
       <tr><td>0 触达</td><td>落地页 / 邀请链接 / 二维码海报 / 社媒卡</td><td>🎁 Web 自动填码 · App 手填</td><td>⑤</td></tr>
@@ -737,7 +846,7 @@
       <tr><td>9 提币 / 出金</td><td>法币出金 · 提币 · 地址管理</td><td>🎁 手续费优惠券不可提；现金券 / VA 第二版（v2）解冻后提</td><td>⑪</td></tr>
       <tr><td>10 客服 / 帮助</td><td>在线客服 · 工单 · 常见问题 · 活动规则页</td><td>🎁 规则常见问题 · 奖励申诉</td><td>⑬</td></tr>
       <tr><td>11 KOL 专属</td><td>KOL 申请 · 后台 · 多码 · 分渠道数据 · 结算</td><td>🎁🎁 KOL 核心（Web）</td><td>⑮⑯</td></tr>
-      <tr><td>12 安全 / 设置</td><td>双重验证（2FA）· 登录历史 · 注销 · 隐私 · 通知偏好</td><td>🎁 异常邀请风控提示</td><td>⑫</td></tr>
+      <tr><td>12 安全 / 设置</td><td><b>Passkey 无密码登录</b> · 双重验证（2FA）· 资金密码 · 登录历史 · 注销 · 通知偏好</td><td>🎁 异常邀请风控提示</td><td>⑫</td></tr>
       <tr><td>13 流失 / 召回</td><td>沉睡提醒 · 召回券 · 流失问卷</td><td>🎁 复用券系统（v2）</td><td>⑭</td></tr>
     </table>
   </section>
