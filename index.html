@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitV 邀请奖励 · 原型 v0.2（官网配色对齐）</title>
+<style>
+  :root{
+    /* BitV 官网真实品牌色 (theme-day) */
+    --brand:#325bf6; --brand-d:#254ad5; --brand-l:#6b8cff;
+    --nav:#0c142e; --nav-2:#142250;
+    --ink:#121213; --muted:#6a6a6a; --line:#e0e0e0; --line-2:#d4d5db; --bg:#f9f9fd; --white:#fff;
+    --ok:#18b451; --ok-d:#149041; --warn:#e6a23c; --hold:#8a7bd8; --bad:#fa4d4d;
+    --blue-bg:#eef3ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  header.top{background:var(--nav);color:#fff;padding:18px 28px;display:flex;align-items:center;gap:14px;border-bottom:3px solid var(--brand)}
+  header.top .logo{width:30px;height:30px;background:var(--brand);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px}
+  header.top h1{font-size:18px;font-weight:700;letter-spacing:.3px}
+  header.top .meta{margin-left:auto;font-size:12px;color:#8ea0cc}
+  .wrap{display:flex;min-height:calc(100vh - 63px)}
+  nav.side{width:220px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+  nav.side .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:14px 22px 6px;font-weight:700}
+  nav.side a{display:block;padding:9px 22px;font-size:13.5px;color:var(--ink);cursor:pointer;border-left:3px solid transparent}
+  nav.side a:hover{background:var(--bg)}
+  nav.side a.active{background:var(--blue-bg);border-left-color:var(--brand);color:var(--brand-d);font-weight:600}
+  main{flex:1;padding:30px 38px;overflow:auto}
+  .screen{display:none}
+  .screen.show{display:block}
+  .screen h2{font-size:20px;color:var(--nav);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+  .screen h2 .tag{font-size:11px;background:var(--brand);color:#fff;padding:2px 9px;border-radius:20px;font-weight:700}
+  .screen .sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+  .row{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+
+  /* phone mock */
+  .phone{width:280px;background:#fff;border:9px solid #0a0f22;border-radius:34px;overflow:hidden;box-shadow:0 12px 30px rgba(12,20,46,.18);flex-shrink:0}
+  .phone .notch{height:26px;background:#0a0f22;display:flex;justify-content:center;align-items:flex-start}
+  .phone .notch::after{content:"";width:90px;height:16px;background:#0a0f22;border-radius:0 0 12px 12px;margin-top:-2px}
+  .pbody{background:var(--bg);height:520px;overflow:auto}
+  .pbar{background:var(--nav);color:#fff;padding:12px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .pbar .back{font-size:16px;opacity:.8}
+  .pcontent{padding:16px}
+  .ptab{display:flex;background:#fff;border-top:1px solid var(--line);position:sticky;bottom:0}
+  .ptab div{flex:1;text-align:center;padding:9px 0;font-size:10px;color:var(--muted)}
+  .ptab div.on{color:var(--brand);font-weight:700}
+  .ptab div .ic{display:block;font-size:16px;margin-bottom:2px}
+
+  /* browser mock */
+  .browser{flex:1;min-width:520px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 10px 26px rgba(12,20,46,.10)}
+  .bbar{background:#eef0f6;padding:9px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--line)}
+  .bbar .dot{width:11px;height:11px;border-radius:50%}
+  .bbar .url{margin-left:10px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px 12px;font-size:12px;color:var(--muted);flex:1}
+  .bbody{padding:22px 26px}
+
+  /* ui atoms */
+  .field{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:13px;color:var(--muted);margin-bottom:11px;display:flex;align-items:center;justify-content:space-between;position:relative}
+  .field.filled{color:var(--ink);border-color:var(--line-2)}
+  .field .lab{font-size:10px;color:var(--muted);position:absolute;top:-8px;left:10px;background:#fff;padding:0 4px}
+  .btn{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:12px;width:100%;font-size:14px;font-weight:600;cursor:pointer}
+  .btn:hover{background:var(--brand-d)}
+  .btn.reward{background:var(--ok)}
+  .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+  .chip{display:inline-block;background:var(--blue-bg);color:var(--brand-d);font-size:11px;padding:3px 10px;border-radius:20px;margin:2px}
+  .chip.g{background:#e9f9ef;color:var(--ok-d)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:14px;margin-bottom:12px}
+  .card.hl{border-color:var(--brand);background:linear-gradient(180deg,#f5f8ff,#fff)}
+  .card.hlg{border-color:var(--ok);background:linear-gradient(180deg,#f1fbf5,#fff)}
+  .codebox{background:var(--nav);color:#fff;border-radius:11px;padding:16px;text-align:center;margin-bottom:12px}
+  .codebox .c{font-size:26px;font-weight:800;letter-spacing:4px;color:var(--brand-l);font-family:"SFMono-Regular",Consolas,monospace}
+  .codebox .l{font-size:11px;color:#8ea0cc;margin-bottom:6px}
+  .stat{display:flex;gap:10px}
+  .stat .s{flex:1;background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px;text-align:center}
+  .stat .s b{display:block;font-size:19px;color:var(--nav)}
+  .stat .s span{font-size:10px;color:var(--muted)}
+  .stepline{font-size:12px;color:var(--ink);margin:7px 0;padding-left:18px;position:relative}
+  .stepline::before{content:"";width:8px;height:8px;background:var(--brand);border-radius:50%;position:absolute;left:2px;top:5px}
+  table.t{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.t th{background:var(--nav);color:#fff;text-align:left;padding:8px 10px;font-weight:600}
+  table.t td{padding:8px 10px;border-bottom:1px solid var(--line)}
+  table.t tr:nth-child(even){background:#fafbff}
+  .badge{font-size:10px;padding:2px 8px;border-radius:5px;color:#fff;font-weight:600}
+  .b-ok{background:var(--ok)} .b-hold{background:var(--hold)} .b-wait{background:var(--warn)} .b-bad{background:var(--bad)}
+  .note{background:var(--blue-bg);border-left:3px solid var(--brand);padding:10px 13px;font-size:12px;color:#2a3a66;border-radius:0 7px 7px 0;margin:14px 0}
+  .note.warn{background:#fff5e6;border-left-color:var(--warn);color:#7a5a1e}
+  .sec-t{font-size:13px;font-weight:700;color:var(--nav);margin:18px 0 9px;border-bottom:1px solid var(--line);padding-bottom:5px}
+  /* flow */
+  .flow{display:flex;flex-direction:column;gap:0;align-items:center}
+  .fbox{background:#fff;border:1.5px solid var(--brand);border-radius:9px;padding:10px 16px;font-size:12.5px;text-align:center;color:var(--brand-d);font-weight:600;max-width:340px}
+  .fbox.gold{border-color:var(--ok);background:#f1fbf5;color:var(--ok-d)}
+  .fbox.dec{border-style:dashed;background:#f6f8ff}
+  .fbox.bad{border-color:var(--bad);color:var(--bad)}
+  .farrow{width:2px;height:20px;background:var(--brand)}
+  .frow{display:flex;gap:20px;align-items:flex-start;justify-content:center}
+  .fcol{display:flex;flex-direction:column;align-items:center}
+  .flbl{font-size:10px;color:var(--muted);margin:2px}
+  .toggle{width:34px;height:18px;background:var(--ok);border-radius:20px;position:relative;display:inline-block}
+  .toggle::after{content:"";width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;right:2px}
+  .toggle.off{background:#cfcfcf}.toggle.off::after{left:2px;right:auto}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">b</div>
+  <h1>bitV 邀请奖励系统 · 交互原型</h1>
+  <div class="meta">v0.2 · 2026-06-03</div>
+</header>
+<div class="wrap">
+  <nav class="side">
+    <div class="grp">App 端 · 客户</div>
+    <a data-s="reg" class="active">① 注册 · 邀请码（App 手填）</a>
+    <a data-s="invite">② 我的邀请页</a>
+    <a data-s="reward">③ 奖励中心 · 状态</a>
+    <a data-s="task">④ 任务中心</a>
+    <div class="grp">Web 端 · 客户生命周期</div>
+    <a data-s="landing">⑤ 邀请落地页</a>
+    <a data-s="webreg">⑥ Web 注册 · 自动填码</a>
+    <a data-s="login">⑦ Web 登录</a>
+    <a data-s="kaihu">⑧ 开户（实名+入金合一）</a>
+    <a data-s="recharge">⑨ 充币</a>
+    <a data-s="trade">⑩ 交易</a>
+    <a data-s="withdraw">⑪ 出金 / 提现</a>
+    <a data-s="security">⑫ 安全 · 设置</a>
+    <a data-s="support">⑬ 客服 / 帮助</a>
+    <a data-s="recall">⑭ 流失召回</a>
+    <div class="grp">Web 端 · KOL / 运营</div>
+    <a data-s="kolapply">⑮ KOL 申请</a>
+    <a data-s="kolconsole">⑯ KOL 后台 · 多码</a>
+    <a data-s="admin">⑰ 运营后台 · 规则配置</a>
+    <div class="grp">逻辑</div>
+    <a data-s="lifecycle">⑱ 客户生命周期地图</a>
+    <a data-s="flow">⑲ 主流程图（App / Web 分流）</a>
+  </nav>
+  <main>
+
+  <!-- ① 注册 -->
+  <section class="screen show" id="reg">
+    <h2><span class="tag">App</span>① 注册 · 邀请码自动填充</h2>
+    <div class="sub">入口携带邀请码 → 注册页自动带入 → 注册即绑定一级邀请关系。</div>
+    <div class="row">
+      <div class="phone"><div class="notch"></div><div class="pbody">
+        <div class="pbar"><span class="back">‹</span> 注册 bitV 账户</div>
+        <div class="pcontent">
+          <div class="field filled">手机号 / 邮箱 <span>+852 ····5678</span></div>
+          <div class="field filled">验证码 <span>······</span></div>
+          <div class="field filled">设置密码 <span>············</span></div>
+          <div class="card hl" style="padding:11px 13px;margin:14px 0">
+            <div style="font-size:10px;color:var(--brand-d);font-weight:700">🎁 邀请码（已自动填充）</div>
+            <div style="font-size:18px;font-weight:800;letter-spacing:2px;color:var(--nav)">87341920</div>
+            <div style="font-size:10px;color:var(--muted)">来自好友 Alex · 注册后完成实名认证，双方获奖励</div>
+          </div>
+          <button class="btn" data-goto="kaihu">注册并继续开户 →</button>
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px">注册即同意《邀请活动规则》</div>
+        </div>
+      </div></div>
+      <div style="flex:1;min-width:280px">
+        <div class="sec-t">交互要点（App 端归因，R10）</div>
+        <div class="stepline"><b>App 端默认手填邀请码</b>：手机点链接只会跳应用商店下载，安装后无法确定性定位邀请者，须被邀请者主动输入邀请码</div>
+        <div class="stepline">v2 进阶：接入归因 SDK（AppsFlyer / Branch）做<b>延迟深度链接（deferred deep linking）</b>，安装后自动带入码（受 iOS 隐私限制，匹配率打折）</div>
+        <div class="stepline">注册成功即写 <code>invite_relation(邀请者, 被邀请者)</code>，<b>一级、不可重绑</b></div>
+        <div class="note">⚠️ 老用户点邀请链接 → 拦截，不可重复建立邀请关系（防自荐 / 刷量）。<br>对比：Web 端凭链接 <code>?ref=</code> 自动填码（见 ⑥），无需手填——这就是两端流程图必须分开的原因。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 我的邀请 -->
+  <section class="screen" id="invite">
+    <h2><span class="tag">App</span>② 我的邀请页</h2>
+    <div class="sub">普通用户核心传播页：展示码、分享入口、邀请进度漏斗。</div>
+    <div class="row">
+      <div class="phone"><div class="notch"></div><div class="pbody">
+        <div class="pbar"><span class="back">‹</span> 邀请好友</div>
+        <div class="pcontent">
+          <div class="codebox">
+            <div class="l">我的专属邀请码</div>
+            <div class="c">87341920</div>
+          </div>
+          <div class="stat" style="margin-bottom:12px">
+            <div class="s"><b>12</b><span>已邀请</span></div>
+            <div class="s"><b>7</b><span>已认证</span></div>
+            <div class="s"><b>¥520</b><span>累计奖励</span></div>
+          </div>
+          <div class="row" style="gap:8px">
+            <button class="btn" style="flex:1">🔗 复制链接</button>
+            <button class="btn reward" style="flex:1">🖼 生成海报</button>
+          </div>
+          <button class="btn ghost" style="margin-top:8px">分享到 微信 / Telegram / X</button>
+          <div class="sec-t">邀请进度</div>
+          <div class="card" style="padding:11px">
+            <table class="t" style="font-size:11.5px">
+              <tr><td>用户 t***9</td><td><span class="badge b-ok">已发奖</span></td></tr>
+              <tr><td>用户 m***2</td><td><span class="badge b-hold">冻结期</span></td></tr>
+              <tr><td>用户 k***5</td><td><span class="badge b-wait">待认证</span></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="ptab"><div><span class="ic">🏠</span>首页</div><div><span class="ic">📈</span>行情</div><div class="on"><span class="ic">🎁</span>邀请</div><div><span class="ic">👤</span>我的</div></div>
+      </div></div>
+      <div style="flex:1;min-width:280px">
+        <div class="sec-t">说明</div>
+        <div class="stepline">普通用户码 = <b>8 位数字、系统生成、全局去重</b>（生成算法见 PRD §7.1.1，随机数 + 查重重试）</div>
+        <div class="stepline">普通用户邀请上限可配（参考 HashKey ≤ 3，bitV 待定 Q4）</div>
+        <div class="stepline">进度漏斗映射奖励状态机：待开户 → 冻结期 → 已发奖</div>
+        <div class="stepline">三种分享形态对应需求 R3</div>
+        <div class="note warn">⚠️ <b>邀请者须先完成开户（实名认证）才能邀请（R9）</b>：未开户用户进入本页只看到「先完成开户才能邀请好友」引导，邀请码不发放、入口置灰。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 奖励中心 -->
+  <section class="screen" id="reward">
+    <h2><span class="tag">App</span>③ 奖励中心 · 状态机可视化</h2>
+    <div class="sub">客户查看/手动领取奖励的主入口；状态对应 PRD 第 7.3 状态机。</div>
+    <div class="row">
+      <div class="phone"><div class="notch"></div><div class="pbody">
+        <div class="pbar"><span class="back">‹</span> 我的奖励</div>
+        <div class="pcontent">
+          <div class="card hlg">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><b style="color:var(--nav)">手续费体验券 ¥88</b><div style="font-size:10px;color:var(--muted)">邀请 m***2 · 入金达标</div></div>
+              <button class="btn reward" style="width:auto;padding:8px 16px">领取</button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between"><b>邀请奖 ¥50</b><span class="badge b-hold">冻结期 T+5</span></div>
+            <div style="font-size:10px;color:var(--muted)">反欺诈校验中，5 天后可领</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between"><b>邀请奖 ¥50</b><span class="badge b-wait">待达标</span></div>
+            <div style="font-size:10px;color:var(--muted)">好友尚未完成实名认证</div>
+          </div>
+          <div class="card" style="opacity:.6">
+            <div style="display:flex;justify-content:space-between"><b>邀请奖 ¥50</b><span class="badge b-bad">已过期</span></div>
+            <div style="font-size:10px;color:var(--muted)">好友 365 天内未认证</div>
+          </div>
+          <div class="note" style="margin:8px 0 0">奖励需<b>手动领取</b>，领取后发放至券包。</div>
+        </div>
+      </div></div>
+      <div style="flex:1;min-width:280px">
+        <div class="sec-t">状态徽标 ↔ 状态机</div>
+        <table class="t">
+          <tr><th>UI 徽标</th><th>状态</th><th>含义</th></tr>
+          <tr><td>领取</td><td>claimable</td><td>风控通过，可手动领</td></tr>
+          <tr><td><span class="badge b-hold">冻结期</span></td><td>holding</td><td>反欺诈窗口（T+N / 入金维持期）</td></tr>
+          <tr><td><span class="badge b-wait">待达标</span></td><td>qualified/pending</td><td>触发条件未满足</td></tr>
+          <tr><td><span class="badge b-ok">已发奖</span></td><td>issued</td><td>已到券包</td></tr>
+          <tr><td><span class="badge b-bad">已过期</span></td><td>expired</td><td>超有效期</td></tr>
+        </table>
+        <div class="note">邀请者未 KYC：奖励暂挂 qualified，KYC 后 30 分钟内补发（沿用 HashKey）。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ 任务中心 -->
+  <section class="screen" id="task">
+    <h2><span class="tag">App</span>④ 任务中心</h2>
+    <div class="sub">把不同奖励规则（模板 A/B）包装成「任务」呈现给用户。</div>
+    <div class="row">
+      <div class="phone"><div class="notch"></div><div class="pbody">
+        <div class="pbar"><span class="back">‹</span> 邀请任务</div>
+        <div class="pcontent">
+          <div class="card hl">
+            <div class="chip">模板A · 开户即发</div>
+            <b style="display:block;color:var(--nav);margin:6px 0">拉新冲刺</b>
+            <div style="font-size:11px;color:var(--muted)">好友完成实名认证 → 你得 ¥30 券，好友得 ¥30 券</div>
+            <div style="font-size:10px;color:var(--brand-d);margin-top:6px">进度 7/10 · 剩 3 名达上限</div>
+          </div>
+          <div class="card hlg">
+            <div class="chip g">模板B · 入金留存</div>
+            <b style="display:block;color:var(--nav);margin:6px 0">优质好友</b>
+            <div style="font-size:11px;color:var(--muted)">好友入金 ≥¥10,000 维持 30 日 → 你得 ¥188 券</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:6px">高奖励 · 冻结期防薅</div>
+          </div>
+        </div>
+        <div class="ptab"><div><span class="ic">🏠</span>首页</div><div><span class="ic">📈</span>行情</div><div class="on"><span class="ic">🎁</span>邀请</div><div><span class="ic">👤</span>我的</div></div>
+      </div></div>
+      <div style="flex:1;min-width:280px">
+        <div class="sec-t">设计意图</div>
+        <div class="stepline">同一邀请码可绑不同任务（规则模板），用户视角即「任务」</div>
+        <div class="stepline">模板 A（HashKey 式低门槛）冲量；模板 B（OSL 式入金留存）保质</div>
+        <div class="stepline">上限/预算实时显示，防超发</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ 落地页 -->
+  <section class="screen" id="landing">
+    <h2><span class="tag">Web</span>⑤ 邀请落地页</h2>
+    <div class="sub">分享链接落点：展示活动、自动带码、引导下载/注册。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/invite?ref=87341920</span></div>
+      <div class="bbody" style="background:var(--nav);color:#fff;border-radius:0">
+        <div style="max-width:640px;margin:0 auto;text-align:center;padding:14px 0">
+          <div class="chip" style="background:rgba(50,91,246,.22);color:var(--brand-l)">好友 Alex 邀请你加入 bitV</div>
+          <h1 style="font-size:30px;margin:14px 0 6px">注册并完成认证<br><span style="color:var(--brand-l)">双方各得 ¥30 体验券</span></h1>
+          <p style="color:#8ea0cc;font-size:13px;margin-bottom:20px">香港持牌虚拟资产平台 · 1/4/9 号牌 + VATP</p>
+          <div style="background:#fff;color:var(--nav);display:inline-block;padding:8px 20px;border-radius:9px;font-weight:800;letter-spacing:3px;font-size:18px">邀请码 87341920 ✓ 已带入</div>
+          <div style="margin-top:20px;display:flex;gap:12px;justify-content:center">
+            <button class="btn" style="width:auto;padding:13px 30px" data-goto="reg">下载 App 注册</button>
+            <button class="btn ghost" style="width:auto;padding:13px 30px;background:transparent;color:#fff;border-color:#fff" data-goto="webreg">网页注册</button>
+          </div>
+          <div style="font-size:10px;color:#7286b8;margin-top:16px">活动规则 · 仅限个人客户 · 受 SFC 监管</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑥ Web 注册 -->
+  <section class="screen" id="webreg">
+    <h2><span class="tag">Web</span>⑥ Web 注册（生命周期阶段 1）</h2>
+    <div class="sub">网页端注册：左表单含邀请码自动填充，右侧信任/奖励引导。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/register?ref=87341920</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:300px">
+            <h1 style="color:var(--nav);font-size:22px;margin-bottom:18px">创建 bitV 账户</h1>
+            <div style="display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--line)">
+              <div style="padding:8px 16px;border-bottom:2px solid var(--brand);color:var(--brand);font-weight:600;font-size:13px">邮箱注册</div>
+              <div style="padding:8px 16px;color:var(--muted);font-size:13px">手机注册</div>
+            </div>
+            <div class="field filled"><span class="lab">邮箱</span>alex····@gmail.com</div>
+            <div class="field filled"><span class="lab">验证码</span>······ <span style="color:var(--brand);font-size:11px">获取验证码</span></div>
+            <div class="field filled"><span class="lab">登录密码</span>············</div>
+            <div class="card hl" style="padding:11px 13px;margin:6px 0 14px">
+              <div style="font-size:10px;color:var(--brand-d);font-weight:700">🎁 邀请码（链接自动带入，可改）</div>
+              <div style="font-size:17px;font-weight:800;letter-spacing:2px;color:var(--nav)">87341920</div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:12px">☑ 我已阅读并同意《用户协议》《隐私政策》《邀请活动规则》</div>
+            <button class="btn" data-goto="kaihu">注册</button>
+            <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px">已有账户？<span style="color:var(--brand)">登录</span></div>
+          </div>
+          <div style="width:240px;background:var(--blue-bg);border-radius:11px;padding:18px">
+            <div class="sec-t" style="margin-top:0;border:none;color:var(--brand-d)">🎁 你被邀请加入</div>
+            <div class="stepline">完成实名认证 → 得 ¥30 新客体验券</div>
+            <div class="stepline">好友 Alex 同步获邀请奖励</div>
+            <div class="sec-t" style="color:var(--nav)">为何选 bitV</div>
+            <div class="stepline">香港持牌 1/4/9 号 + VATP</div>
+            <div class="stepline">第三方托管 · 资产隔离</div>
+            <div class="stepline">受 SFC 监管</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="note">阶段 1 注册是邀请关系绑定点。Web 注册无 deeplink 问题，邀请码直接由 URL <code>?ref=</code> 带入并允许手改。</div>
+  </section>
+
+  <!-- ⑦ Web 登录 -->
+  <section class="screen" id="login">
+    <h2><span class="tag">Web</span>⑦ Web 登录（生命周期阶段 2）</h2>
+    <div class="sub">账密/验证码登录 + 2FA + 找回密码 + 设备管理。登录本身无奖励，但是风控关口。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/login</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:300px">
+            <h1 style="color:var(--nav);font-size:22px;margin-bottom:18px">登录 bitV</h1>
+            <div style="display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--line)">
+              <div style="padding:8px 16px;border-bottom:2px solid var(--brand);color:var(--brand);font-weight:600;font-size:13px">密码登录</div>
+              <div style="padding:8px 16px;color:var(--muted);font-size:13px">验证码登录</div>
+            </div>
+            <div class="field filled"><span class="lab">邮箱 / 手机</span>alex····@gmail.com</div>
+            <div class="field filled"><span class="lab">密码</span>············</div>
+            <div class="field"><span class="lab">2FA 双重验证</span>Google Authenticator 6 位</div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:12px">
+              <span style="color:var(--muted)">☑ 记住此设备（30 天）</span>
+              <span style="color:var(--brand)">忘记密码？</span>
+            </div>
+            <button class="btn" data-goto="invite">登录</button>
+            <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px">还没有账户？<span style="color:var(--brand)">注册</span></div>
+          </div>
+          <div style="width:240px">
+            <div class="sec-t" style="margin-top:0">安全机制</div>
+            <div class="stepline">强制 2FA（Google/SMS）</div>
+            <div class="stepline">异地/新设备登录 → 邮件/短信验证</div>
+            <div class="stepline">登录历史可在「安全设置」查</div>
+            <div class="note warn">🎁 风控联动：同设备/同 IP 簇短时多账号登录 → 标记可疑，影响邀请奖励发放（防 Sybil）。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑧ 开户（实名+入金合一） -->
+  <section class="screen" id="kaihu">
+    <h2><span class="tag">Web</span>⑧ 开户 · 实名认证（KYC）+ 入金 1 万港元（合一）</h2>
+    <div class="sub">BitV 只有线上开户：实名与入金必须同时完成才算开户成功，这是邀请奖励触发的关键节点。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/account/onboarding</span></div>
+      <div class="bbody">
+        <div style="display:flex;gap:8px;margin-bottom:18px;font-size:11px">
+          <div style="flex:1;text-align:center;padding:8px;background:var(--blue-bg);border-radius:8px;color:var(--brand-d);font-weight:700">1 证件 ✓</div>
+          <div style="flex:1;text-align:center;padding:8px;background:var(--blue-bg);border-radius:8px;color:var(--brand-d);font-weight:700">2 人脸 ✓</div>
+          <div style="flex:1;text-align:center;padding:8px;background:var(--blue-bg);border-radius:8px;color:var(--brand-d);font-weight:700">3 地址 ✓</div>
+          <div style="flex:1;text-align:center;padding:8px;background:var(--blue-bg);border-radius:8px;color:var(--brand-d);font-weight:700">4 风险测评 ✓</div>
+          <div style="flex:1;text-align:center;padding:8px;background:#fff;border:1px solid var(--brand);border-radius:8px;color:var(--brand);font-weight:700">5 入金</div>
+        </div>
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:300px">
+            <div class="sec-t" style="margin-top:0">第 5 步 · 入金 1 万港元（HKD）</div>
+            <div class="field filled"><span class="lab">入金方式</span>银行转账 / 转数快（FPS）</div>
+            <div class="field filled"><span class="lab">金额</span>HKD 10,000（开户最低要求）</div>
+            <div class="card hl" style="margin:6px 0 14px">
+              <div style="font-size:11px;color:var(--brand-d);font-weight:700">实名认证（KYC）已通过 ✓ · 仅差入金</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:4px">入金到账后账户正式创建完成</div>
+            </div>
+            <button class="btn" data-goto="reward">确认入金 · 完成开户 →</button>
+          </div>
+          <div style="width:250px">
+            <div class="sec-t" style="margin-top:0">🎁 奖励触发逻辑</div>
+            <div class="stepline">实名 + 入金 1 万 = <b>开户成功</b>（原子动作）</div>
+            <div class="stepline">就在开户成功这一刻 → 触发「开户即发型」基线奖励</div>
+            <div class="stepline">邀请者与被邀请者奖励进入冻结期</div>
+            <div class="note">只过实名却没入金 → 开户不算完成 → 奖励不触发。这就是 HashKey「仅 KYC」与 OSL「入金留存」在 BitV 统一为同一条基线的原因。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑨ 充币 -->
+  <section class="screen" id="recharge">
+    <h2><span class="tag">Web</span>⑨ 充币（加密充值）</h2>
+    <div class="sub">开户后追加资金；进阶留存型奖励可在此叠加触发条件。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/assets/deposit</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:320px">
+            <div class="field filled"><span class="lab">币种</span>USDT</div>
+            <div class="field filled"><span class="lab">网络</span>TRC20</div>
+            <div class="card" style="text-align:center">
+              <div style="width:120px;height:120px;margin:0 auto 8px;background:repeating-linear-gradient(45deg,#0c142e,#0c142e 4px,#fff 4px,#fff 8px);border-radius:8px"></div>
+              <div style="font-size:11px;color:var(--muted)">充值地址（二维码）</div>
+              <div style="font-size:12px;color:var(--nav);word-break:break-all;margin-top:4px">TXk9...8fG2 <span style="color:var(--brand)">复制</span></div>
+            </div>
+            <div class="stepline">从外部钱包转入 → 链上确认 → 到账入账</div>
+          </div>
+          <div style="width:250px">
+            <div class="sec-t" style="margin-top:0">🎁 进阶留存型联动</div>
+            <div class="card hlg">
+              <b style="font-size:12px;color:var(--ok-d)">进阶任务进度</b>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">充币累计 ≥ HK$50,000 维持 30 日 → 邀请者得 ¥188 券</div>
+              <div style="font-size:10px;color:var(--ok-d);margin-top:6px">当前 ¥32,000 / 50,000</div>
+            </div>
+            <div class="note">充币是「进阶留存型」模板的可选触发事件之一（另有交易量、持仓时长）。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑩ 交易 -->
+  <section class="screen" id="trade">
+    <h2><span class="tag">Web</span>⑩ 交易（现货 / 场外 OTC / 永续）</h2>
+    <div class="sub">部分活动以首笔交易或累计交易量为进阶触发条件。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/trade/BTC-USDT</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:20px">
+          <div style="flex:2;min-width:300px">
+            <div style="background:var(--nav);border-radius:9px;height:150px;display:flex;align-items:center;justify-content:center;color:#6b8cff;font-size:12px;margin-bottom:12px">K 线行情图（BTC / USDT）</div>
+            <div style="display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid var(--line)">
+              <div style="padding:6px 14px;border-bottom:2px solid var(--ok);color:var(--ok-d);font-weight:600;font-size:13px">买入</div>
+              <div style="padding:6px 14px;color:var(--muted);font-size:13px">卖出</div>
+            </div>
+            <div class="field filled"><span class="lab">价格</span>限价 / 市价</div>
+            <div class="field filled"><span class="lab">数量</span>0.05 BTC</div>
+            <button class="btn reward" data-goto="withdraw">买入 BTC</button>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div class="sec-t" style="margin-top:0">🎁 交易量触发</div>
+            <div class="card">
+              <b style="font-size:12px">进阶任务</b>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">累计交易量 ≥ HK$100,000 → 发奖</div>
+            </div>
+            <div class="stepline">下单 → 风控 / 余额校验 → 撮合成交 → 持仓更新</div>
+            <div class="stepline">交易量按成交额累计，达标即触发</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑪ 出金/提现 -->
+  <section class="screen" id="withdraw">
+    <h2><span class="tag">Web</span>⑪ 出金 / 提现</h2>
+    <div class="sub">法币出金 / 加密提币 + 地址管理。奖励账户与可提资产在此交汇。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/assets/withdraw</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:320px">
+            <div style="display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--line)">
+              <div style="padding:8px 16px;border-bottom:2px solid var(--brand);color:var(--brand);font-weight:600;font-size:13px">加密提币</div>
+              <div style="padding:8px 16px;color:var(--muted);font-size:13px">法币出金</div>
+            </div>
+            <div class="field filled"><span class="lab">币种</span>USDT</div>
+            <div class="field filled"><span class="lab">网络</span>TRC20</div>
+            <div class="field filled"><span class="lab">提币地址</span>T···（地址簿选择）</div>
+            <div class="field filled"><span class="lab">数量</span>1,000.00 · 可用 3,250.00</div>
+            <div class="field"><span class="lab">2FA + 资金密码</span>双重校验</div>
+            <button class="btn">提交提币</button>
+          </div>
+          <div style="width:250px">
+            <div class="sec-t" style="margin-top:0">🎁 我的奖励资产</div>
+            <div class="card">
+              <div style="display:flex;justify-content:space-between"><b style="font-size:12px">手续费体验券</b><span class="chip g">不可提现</span></div>
+              <div style="font-size:10px;color:var(--muted)">¥176 · 交易时自动抵扣</div>
+            </div>
+            <div class="card" style="opacity:.55">
+              <div style="display:flex;justify-content:space-between"><b style="font-size:12px">现金/VA 奖励</b><span class="chip">v2</span></div>
+              <div style="font-size:10px;color:var(--muted)">解冻期满后可提（待合规开闸 11.1/11.2）</div>
+            </div>
+            <div class="note">v1 奖励为<b>体验券，仅抵扣不可提</b>，规避「分发 VA/现金」合规与账务负担。v2 现金/VA 奖励解冻后方可在此提取。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑨ 安全设置 -->
+  <section class="screen" id="security">
+    <h2><span class="tag">Web</span>⑫ 安全 · 设置</h2>
+    <div class="sub">2FA / 登录历史 / 设备 / 注销 / 通知偏好 + 异常邀请风控提示。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/account/security</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:320px">
+            <div class="sec-t" style="margin-top:0">账户安全</div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">双重验证 2FA</b><div style="font-size:10px;color:var(--muted)">Google Authenticator</div></div><span class="toggle"></span></div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">资金密码</b><div style="font-size:10px;color:var(--muted)">提币/出金校验</div></div><span class="toggle"></span></div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">登录历史 / 设备管理</b><div style="font-size:10px;color:var(--muted)">3 台已信任设备</div></div><span style="color:var(--brand);font-size:12px">查看 ›</span></div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">通知偏好</b><div style="font-size:10px;color:var(--muted)">奖励到账 / 安全告警</div></div><span class="toggle"></span></div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px;color:var(--bad)">注销账户</b><div style="font-size:10px;color:var(--muted)">不可逆 · 须人工审核</div></div><span style="color:var(--bad);font-size:12px">申请 ›</span></div></div>
+          </div>
+          <div style="width:250px">
+            <div class="sec-t" style="margin-top:0">🎁 邀请风控提示</div>
+            <div class="note warn">检测到你的邀请关系中存在 <b>2 个关联账号</b>（同设备/同付款源）。相关奖励已暂挂复核，请勿自荐或刷量，违规将拨回奖励并限制参与（PRD 7.6 自荐闸）。</div>
+            <div class="stepline">奖励绑唯一 KYC 自然人</div>
+            <div class="stepline">异常注册速率 → 冻结结算</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑬ 客服/帮助 -->
+  <section class="screen" id="support">
+    <h2><span class="tag">Web</span>⑬ 客服 / 帮助</h2>
+    <div class="sub">在线客服、工单、常见问题、活动规则页；含邀请规则常见问题与奖励申诉。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/support</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:320px">
+            <div class="sec-t" style="margin-top:0">常见问题（FAQ）· 邀请奖励</div>
+            <div class="card"><b style="font-size:13px">为什么我的邀请奖励还没到账？</b><div style="font-size:11px;color:var(--muted);margin-top:4px">好友需完成开户（实名 + 入金 1 万），且奖励经过冻结期风控校验后方可领取。</div></div>
+            <div class="card"><b style="font-size:13px">邀请码在 App 上为什么要手动填？</b><div style="font-size:11px;color:var(--muted);margin-top:4px">手机点链接只能跳应用商店，安装后需手动输入邀请码定位邀请者。</div></div>
+            <div class="card"><b style="font-size:13px">奖励被撤销了怎么办？（申诉入口）</b><div style="font-size:11px;color:var(--muted);margin-top:4px">若因风控误判被拨回，可在此提交申诉，人工复核。</div></div>
+            <button class="btn ghost" style="margin-top:6px">📋 查看《邀请活动规则》全文</button>
+          </div>
+          <div style="width:250px">
+            <div class="sec-t" style="margin-top:0">在线客服</div>
+            <div class="card hl">
+              <div style="font-size:12px;color:var(--muted)">智能客服 + 转人工</div>
+              <div style="font-size:11px;color:var(--nav);margin-top:8px">「我的邀请奖励为什么是冻结期？」</div>
+              <div style="font-size:11px;color:var(--brand-d);margin-top:6px;background:var(--blue-bg);padding:6px;border-radius:6px">冻结期为反欺诈校验窗口（T+7），期满自动转可领取。</div>
+              <button class="btn" style="margin-top:8px;padding:8px">转人工客服</button>
+            </div>
+            <div class="note">合规要求：奖励规则、有效期、争议处理须完整披露（红线 11.4）。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑭ 流失召回 -->
+  <section class="screen" id="recall">
+    <h2><span class="tag">Web</span>⑭ 流失 / 召回</h2>
+    <div class="sub">沉睡提醒、召回券、流失问卷；复用券系统（v2）。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/lifecycle/recall</span></div>
+      <div class="bbody">
+        <div class="row" style="gap:30px">
+          <div style="flex:1;min-width:320px">
+            <div class="sec-t" style="margin-top:0">召回触达（运营视角）</div>
+            <table class="t">
+              <tr><th>人群</th><th>触达</th><th>激励</th><th>状态</th></tr>
+              <tr><td>开户未充币</td><td>推送 + 短信</td><td>充币体验券 ¥20</td><td><span class="badge b-ok">进行中</span></td></tr>
+              <tr><td>30 日未交易</td><td>邮件</td><td>手续费券 ¥10</td><td><span class="badge b-wait">待发</span></td></tr>
+              <tr><td>邀请奖励未领取</td><td>推送</td><td>领取到期提醒</td><td><span class="badge b-ok">进行中</span></td></tr>
+            </table>
+          </div>
+          <div style="width:250px">
+            <div class="sec-t" style="margin-top:0">🎁 与邀请奖励的关系</div>
+            <div class="stepline">召回券复用同一套券系统</div>
+            <div class="stepline">「邀请奖励即将过期」是高效召回钩子</div>
+            <div class="stepline">v2 才纳入范围（v1 不做）</div>
+            <div class="note">把「你有一张邀请奖励券还没领，3 天后过期」做成召回推送，可同时拉回流失用户并促进领取转化。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑮ KOL申请 -->
+  <section class="screen" id="kolapply">
+    <h2><span class="tag">Web</span>⑮ KOL（大使）申请</h2>
+    <div class="sub">普通用户申请升级 KOL，提交资质 → 后台审核 → 解锁多码与高上限。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/kol/apply</span></div>
+      <div class="bbody">
+        <h1 style="color:var(--nav);font-size:22px;margin-bottom:4px">成为 bitV 大使（KOL）</h1>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px">解锁：无上限邀请 · 多自定义邀请码 · 分渠道数据 · 更高奖励</p>
+        <div class="row" style="gap:20px">
+          <div style="flex:1;min-width:300px">
+            <div class="field filled"><span class="lab">真实姓名</span>张 ··</div>
+            <div class="field filled"><span class="lab">主要社媒平台</span>X / 微博 / Telegram</div>
+            <div class="field filled"><span class="lab">粉丝量</span>5,200</div>
+            <div class="field filled"><span class="lab">社群规模</span>800 人</div>
+            <div class="field"><span class="lab">渠道链接</span>x.com/···（待填）</div>
+            <button class="btn">提交申请</button>
+          </div>
+          <div style="flex:1;min-width:240px">
+            <div class="sec-t" style="margin-top:0">准入门槛（参考 HashKey 大使）</div>
+            <div class="stepline">社媒粉丝 ≥ 阈值（Q5 待定）</div>
+            <div class="stepline">社群成员 ≥ 阈值</div>
+            <div class="stepline">通过身份认证</div>
+            <div class="note">审核通过后开通 KOL 工作台。资质须合规复核（防冒充/刷量主体）。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑪ KOL后台 -->
+  <section class="screen" id="kolconsole">
+    <h2><span class="tag">Web</span>⑯ KOL 后台 · 多码管理 + 分渠道数据</h2>
+    <div class="sub">业务方需求 R1.2 核心：一个 KOL，多个自定义码，按渠道/任务分组，看漏斗。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/kol/console</span></div>
+      <div class="bbody">
+        <div class="stat" style="margin-bottom:18px">
+          <div class="s"><b>3</b><span>自定义码</span></div>
+          <div class="s"><b>1,240</b><span>总扫码</span></div>
+          <div class="s"><b>318</b><span>注册</span></div>
+          <div class="s"><b>205</b><span>已认证</span></div>
+          <div class="s"><b>¥9,860</b><span>累计结算</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="sec-t" style="margin:0">我的邀请码（按渠道/任务）</div>
+          <button class="btn reward" style="width:auto;padding:7px 14px">+ 新建自定义码</button>
+        </div>
+        <table class="t" style="margin-top:10px">
+          <tr><th>自定义码</th><th>渠道/任务</th><th>规则模板</th><th>扫码</th><th>注册</th><th>认证</th><th>结算</th><th>状态</th></tr>
+          <tr><td><b>ALEX-X</b></td><td>X 推文</td><td>A 开户即发</td><td>620</td><td>180</td><td>120</td><td>¥3,600</td><td><span class="badge b-ok">启用</span></td></tr>
+          <tr><td><b>ALEX-TG</b></td><td>Telegram 群</td><td>B 入金留存</td><td>480</td><td>110</td><td>72</td><td>¥5,400</td><td><span class="badge b-ok">启用</span></td></tr>
+          <tr><td><b>ALEX-618</b></td><td>618 活动</td><td>A 开户即发</td><td>140</td><td>28</td><td>13</td><td>¥860</td><td><span class="badge b-wait">审核中</span></td></tr>
+        </table>
+        <div class="note">每个码可独立绑规则模板、独立统计——这就是 R1.2「不同渠道/任务用不同码」的落地形态。新建码须经命名规范化 + 黑名单 + 人工审核。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑫ 运营后台 -->
+  <section class="screen" id="admin">
+    <h2><span class="tag">后台</span>⑰ 运营后台 · 奖励规则配置（无代码）</h2>
+    <div class="sub">业务方需求 R2 落地：选预设模板 → 填参数 → 绑活动/码。不写代码。</div>
+    <div class="browser">
+      <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">admin.bitv.com/referral/rule/new</span></div>
+      <div class="bbody">
+        <h1 style="color:var(--nav);font-size:19px;margin-bottom:16px">新建奖励规则</h1>
+        <div class="row" style="gap:10px;margin-bottom:14px">
+          <div class="card hl" style="flex:1;margin:0">
+            <input type="radio" checked> <b>模板 A · 开户即发</b>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">KYC 通过即触发 · 低门槛拉新</div>
+          </div>
+          <div class="card" style="flex:1;margin:0">
+            <input type="radio"> <b>模板 B · 入金留存</b>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">入金≥X 维持 N 日 · 防薅保质</div>
+          </div>
+        </div>
+        <table class="t">
+          <tr><th>配置项</th><th>值</th></tr>
+          <tr><td>触发事件</td><td>开户成功（KYC 通过）</td></tr>
+          <tr><td>奖励对象</td><td>双边（邀请者 + 被邀请者）</td></tr>
+          <tr><td>奖励形式</td><td>手续费体验券（v1；现金/VA 灰）</td></tr>
+          <tr><td>奖励额度</td><td>邀请者 ¥30 / 被邀请者 ¥30</td></tr>
+          <tr><td>冻结窗口 hold_window</td><td>T+7</td></tr>
+          <tr><td>上限 cap</td><td>单码 500 人 / 活动总预算 ¥50,000</td></tr>
+          <tr><td>有效期</td><td>关系绑定 365 天 / 奖励领取 30 天</td></tr>
+        </table>
+        <div style="margin-top:14px;display:flex;gap:10px">
+          <button class="btn" style="width:auto;padding:10px 24px">保存并绑定活动</button>
+          <button class="btn ghost" style="width:auto;padding:10px 24px">预览</button>
+        </div>
+        <div class="note">现金/VA 奖励项在 v1 置灰，需合规开闸（红线 11.1/11.2）。规则可版本化、热更新、不中断进行中活动。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑬ 生命周期 -->
+  <section class="screen" id="lifecycle">
+    <h2><span class="tag">逻辑</span>⑱ 客户生命周期功能地图</h2>
+    <div class="sub">按注册登录主流程铺开的全生命周期功能（🎁 = 邀请奖励嵌入点）。注意：实名认证（KYC）与入金在 BitV 合一为「开户」（见 PRD §2）。本原型已覆盖 14 屏，对应「原型屏」列。</div>
+    <table class="t">
+      <tr><th>阶段</th><th>功能</th><th>邀请奖励嵌入</th><th>原型屏</th></tr>
+      <tr><td>0 触达</td><td>落地页 / 邀请链接 / 二维码海报 / 社媒卡</td><td>🎁 Web 自动填码 · App 手填</td><td>⑤</td></tr>
+      <tr><td>1 注册</td><td>手机 / 邮箱注册 · 验证码 · 密码 · <b>邀请码框</b></td><td>🎁 绑定一级邀请关系</td><td>①⑥</td></tr>
+      <tr><td>2 登录</td><td>账密 / 验证码 / 生物识别 · 找回密码 · 设备管理</td><td>🎁 风控女巫攻击（Sybil）联动</td><td>⑦</td></tr>
+      <tr><td>3+4 开户（实名 KYC + 入金 1 万，合一）</td><td>证件 · 人脸 · 地址 · 风险测评 · 合格投资者（PI）+ 入金 1 万港元</td><td>🎁🎁 完成开户即触发基线奖励</td><td>⑧</td></tr>
+      <tr><td>5 充币</td><td>加密充值 · 充值地址 · 到账确认</td><td>🎁 进阶留存型可叠加</td><td>⑨</td></tr>
+      <tr><td>6 交易</td><td>现货 / 场外（OTC）/ 永续下单 · 行情 · 订单</td><td>🎁 交易量可选触发</td><td>⑩</td></tr>
+      <tr><td>7 持续活跃</td><td>资产总览 · 持仓 · 收益 · 自选 · 通知</td><td>🎁 留存奖励（v2）</td><td>—</td></tr>
+      <tr><td>8 权益中心</td><td><b>奖励中心 · 我的邀请 · 券包 · 任务中心</b></td><td>🎁🎁 核心页面</td><td>②③④</td></tr>
+      <tr><td>9 提币 / 出金</td><td>法币出金 · 提币 · 地址管理</td><td>🎁 体验券不可提；现金 / VA 第二版（v2）解冻后提</td><td>⑪</td></tr>
+      <tr><td>10 客服 / 帮助</td><td>在线客服 · 工单 · 常见问题 · 活动规则页</td><td>🎁 规则常见问题 · 奖励申诉</td><td>⑬</td></tr>
+      <tr><td>11 KOL 专属</td><td>KOL 申请 · 后台 · 多码 · 分渠道数据 · 结算</td><td>🎁🎁 KOL 核心（Web）</td><td>⑮⑯</td></tr>
+      <tr><td>12 安全 / 设置</td><td>双重验证（2FA）· 登录历史 · 注销 · 隐私 · 通知偏好</td><td>🎁 异常邀请风控提示</td><td>⑫</td></tr>
+      <tr><td>13 流失 / 召回</td><td>沉睡提醒 · 召回券 · 流失问卷</td><td>🎁 复用券系统（v2）</td><td>⑭</td></tr>
+    </table>
+  </section>
+
+  <!-- ⑭ 流程图 -->
+  <section class="screen" id="flow">
+    <h2><span class="tag">逻辑</span>⑲ 主流程图（App / Web 归因分流）</h2>
+    <div class="sub">与 PRD §9.1（App）、§9.2（Web）一致。关键差异在「定位邀请者」一步：App 手填、Web 自动。完整 mermaid 源码与各子流程见 Notion PRD §9。</div>
+    <div class="flow">
+      <div class="fbox gold">邀请者（须先完成开户）获码 / 链接 / 海报</div><div class="farrow"></div>
+      <div class="fbox">分享：链接 · 二维码海报 · 社媒卡</div><div class="farrow"></div>
+      <div class="fbox dec">被邀请者从哪端进入？</div>
+      <div class="frow" style="margin-top:8px">
+        <div class="fcol"><div class="flbl">App 端（R10）</div><div class="fbox">跳应用商店 → 下载安装</div><div class="farrow"></div><div class="fbox bad">只能手动填邀请码<br>（否则无归因）</div><div class="farrow"></div><div class="fbox">绑定一级邀请关系</div></div>
+        <div class="fcol"><div class="flbl">Web 端</div><div class="fbox gold">链接带 ?ref → 自动填充邀请码</div><div class="farrow"></div><div class="fbox dec">老用户？</div>
+          <div class="frow" style="margin-top:8px">
+            <div class="fcol"><div class="flbl">否</div><div class="fbox">绑定一级邀请关系</div></div>
+            <div class="fcol"><div class="flbl">是</div><div class="fbox bad">拦截 · 不可重绑</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="farrow"></div>
+      <div class="fbox gold">开户（实名认证 KYC + 入金 1 万港元，合一）</div><div class="farrow"></div>
+      <div class="fbox dec">命中规则模板？</div>
+      <div class="frow" style="margin-top:8px">
+        <div class="fcol"><div class="flbl">模板 A · 基线</div><div class="fbox">完成开户即 qualified</div></div>
+        <div class="fcol"><div class="flbl">模板 B · 进阶</div><div class="fbox">开户后再达充币 / 交易量 / 持仓门槛</div></div>
+      </div>
+      <div class="farrow"></div>
+      <div class="fbox gold">holding 冻结期 · 反欺诈校验</div><div class="farrow"></div>
+      <div class="fbox dec">风控通过？</div>
+      <div class="frow" style="margin-top:8px">
+        <div class="fcol"><div class="flbl">否</div><div class="fbox bad">clawback · 拒发 · 标记可疑</div></div>
+        <div class="fcol"><div class="flbl">是</div><div class="fbox">claimable → 用户手动领取 → issued</div><div class="farrow"></div><div class="fbox dec">邀请者已完成开户？</div>
+          <div class="frow" style="margin-top:8px">
+            <div class="fcol"><div class="flbl">否</div><div class="fbox">暂挂 · 开户后补发</div></div>
+            <div class="fcol"><div class="flbl">是</div><div class="fbox gold">双边奖励到账</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+<script>
+  function go(id){
+    document.querySelectorAll('nav.side a').forEach(x=>x.classList.toggle('active', x.dataset.s===id));
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+    const el=document.getElementById(id);
+    if(el){el.classList.add('show');}
+    document.querySelector('main').scrollTop=0;
+  }
+  // 左侧导航
+  document.querySelectorAll('nav.side a').forEach(a=>{ a.onclick=()=>go(a.dataset.s); });
+  // 屏内可点跳转（模拟真实流转）：任何带 data-goto 的按钮
+  document.querySelectorAll('[data-goto]').forEach(b=>{
+    b.style.cursor='pointer';
+    b.addEventListener('click', e=>{ e.preventDefault(); go(b.dataset.goto); });
+  });
+</script>
+</body>
+</html>
