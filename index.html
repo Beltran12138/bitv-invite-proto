@@ -209,44 +209,62 @@
 
   <!-- ③ 奖励中心 -->
   <section class="screen" id="reward">
-    <h2><span class="tag">App</span>③ 奖励中心 · 状态机可视化</h2>
-    <div class="sub">客户查看/手动领取奖励的主入口；状态对应 PRD 第 7.3 状态机。</div>
+    <h2><span class="tag">App</span>③ 奖励中心 · 福利主入口</h2>
+    <div class="sub">客户查看任务、领取奖励、管理卡券的主入口（对标 HashKey 奖励中心）；状态对应 PRD 第 7.3 状态机。</div>
     <div class="row">
       <div class="phone"><div class="notch"></div><div class="pbody">
-        <div class="pbar"><span class="back">‹</span> 我的奖励</div>
+        <div class="pbar"><span class="back">‹</span> 奖励中心</div>
         <div class="pcontent">
-          <div class="card hlg">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div><b style="color:var(--nav)">手续费体验券 ¥88</b><div style="font-size:10px;color:var(--muted)">邀请 m***2 · 入金达标</div></div>
-              <button class="btn reward" style="width:auto;padding:8px 16px">领取</button>
+          <div class="card" style="background:var(--nav);color:#fff;border:none">
+            <div style="display:flex;justify-content:space-between;align-items:center"><b style="color:#fff">我的奖励</b><span style="font-size:11px;opacity:.7">奖励明细 ›</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:12px 0 8px">
+              <div><span style="font-size:26px;font-weight:800">0</span> <span style="font-size:12px;opacity:.7">HKD 可用</span></div>
+              <button class="btn reward" style="width:auto;padding:7px 14px;font-size:12px">我的卡券 ›</button>
             </div>
+            <div style="border-top:1px dashed rgba(255,255,255,.25);padding-top:8px;font-size:11px;opacity:.85"><b style="color:#fff">3</b> 张卡券待使用</div>
+          </div>
+          <div style="display:flex;gap:18px;border-bottom:1px solid var(--line);margin:4px 0 10px;font-size:13px">
+            <span style="font-weight:700;color:var(--brand);border-bottom:2px solid var(--brand);padding:6px 0">新用户任务</span>
+            <span style="color:var(--muted);padding:6px 0">邀请好友</span>
+            <span style="color:var(--muted);padding:6px 0">卡券</span>
+          </div>
+          <div class="card hl">
+            <div style="display:flex;justify-content:space-between"><b style="color:var(--brand-d)">60 HKD 现金券</b><span class="chip">无限期</span></div>
+            <div style="font-size:11px;color:var(--muted);margin:6px 0">完成金额 ≥15 USD 的首笔数字资产交易</div>
+            <div style="background:var(--line);border-radius:6px;height:6px;overflow:hidden;margin:6px 0"><div style="width:0%;height:100%;background:var(--brand)"></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--muted)">0 / 15 USD</span><button class="btn" data-goto="trade" style="width:auto;padding:6px 14px;font-size:12px">去交易</button></div>
           </div>
           <div class="card">
-            <div style="display:flex;justify-content:space-between"><b>邀请奖 ¥50</b><span class="badge b-hold">冻结期 T+5</span></div>
-            <div style="font-size:10px;color:var(--muted)">反欺诈校验中，5 天后可领</div>
+            <div style="display:flex;justify-content:space-between"><b>手续费优惠券 ¥20</b><span class="badge b-ok">已完成</span></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">完成首笔数字资产充值</div>
           </div>
-          <div class="card">
-            <div style="display:flex;justify-content:space-between"><b>邀请奖 ¥50</b><span class="badge b-wait">待达标</span></div>
-            <div style="font-size:10px;color:var(--muted)">好友尚未完成实名认证</div>
+          <div class="card hlg">
+            <div style="display:flex;justify-content:space-between"><b style="color:var(--nav)">邀请好友 · 各得 ¥30 手续费优惠券</b><span class="chip g">邀请</span></div>
+            <div style="font-size:11px;color:var(--muted);margin:4px 0 6px">好友完成开户（实名+入金 1 万）双方到账</div>
+            <button class="btn reward" data-goto="invite" style="width:auto;padding:6px 14px;font-size:12px">去邀请</button>
           </div>
-          <div class="card" style="opacity:.6">
-            <div style="display:flex;justify-content:space-between"><b>邀请奖 ¥50</b><span class="badge b-bad">已过期</span></div>
-            <div style="font-size:10px;color:var(--muted)">好友 365 天内未认证</div>
-          </div>
-          <div class="note" style="margin:8px 0 0">奖励需<b>手动领取</b>，领取后发放至券包。</div>
         </div>
+        <div class="ptab"><div><span class="ic">🏠</span>首页</div><div><span class="ic">📈</span>行情</div><div class="on"><span class="ic">🎁</span>奖励</div><div><span class="ic">👤</span>我的</div></div>
       </div></div>
       <div style="flex:1;min-width:280px">
-        <div class="sec-t">状态徽标 ↔ 状态机</div>
+        <div class="sec-t">券种说明（业务方校准 · 体验券≠手续费券）</div>
+        <table class="t">
+          <tr><th>券种</th><th>场景</th><th>含义</th></tr>
+          <tr><td>现金券</td><td>通用</td><td>HKD / 代币直接到账，<b>可提</b>（HashKey 60 HKD / OSL HK$500 式）</td></tr>
+          <tr><td><b>手续费优惠券</b></td><td>交易</td><td>抵扣交易手续费，<b>不可提现</b>（邀请奖励 v1 主用）</td></tr>
+          <tr><td>出金免手续费券</td><td>提币 / 出金</td><td>免一次出金手续费（OSL 法币出金免券式）</td></tr>
+          <tr><td>体验券 / 体验金</td><td><b>理财专属</b></td><td>给体验本金生息，本金锁定仅收益归己，<b>不用于交易奖励</b></td></tr>
+        </table>
+        <div class="sec-t">状态徽标 ↔ 状态机（PRD 7.3）</div>
         <table class="t">
           <tr><th>UI 徽标</th><th>状态</th><th>含义</th></tr>
-          <tr><td>领取</td><td>claimable</td><td>风控通过，可手动领</td></tr>
+          <tr><td>去交易 / 领取</td><td>claimable</td><td>风控通过，可领 / 可用</td></tr>
           <tr><td><span class="badge b-hold">冻结期</span></td><td>holding</td><td>反欺诈窗口（T+N / 入金维持期）</td></tr>
           <tr><td><span class="badge b-wait">待达标</span></td><td>qualified/pending</td><td>触发条件未满足</td></tr>
-          <tr><td><span class="badge b-ok">已发奖</span></td><td>issued</td><td>已到券包</td></tr>
-          <tr><td><span class="badge b-bad">已过期</span></td><td>expired</td><td>超有效期</td></tr>
+          <tr><td><span class="badge b-ok">已完成</span></td><td>issued</td><td>已到卡券包</td></tr>
+          <tr><td><span class="badge b-bad">已过期</span></td><td>expired</td><td>超有效期（卡券 → 过往记录）</td></tr>
         </table>
-        <div class="note">邀请者未 KYC：奖励暂挂 qualified，KYC 后 30 分钟内补发（沿用 HashKey）。</div>
+        <div class="note">邀请者未 KYC：奖励暂挂 qualified，KYC（开户）后 30 分钟内补发。卡券分「进行中 / 过往记录」（HashKey 式）。</div>
       </div>
     </div>
   </section>
@@ -292,7 +310,7 @@
       <div class="bbody" style="background:var(--nav);color:#fff;border-radius:0">
         <div style="max-width:640px;margin:0 auto;text-align:center;padding:14px 0">
           <div class="chip" style="background:rgba(50,91,246,.22);color:var(--brand-l)">好友 Alex 邀请你加入 bitV</div>
-          <h1 style="font-size:30px;margin:14px 0 6px">注册并完成认证<br><span style="color:var(--brand-l)">双方各得 ¥30 体验券</span></h1>
+          <h1 style="font-size:30px;margin:14px 0 6px">注册并完成认证<br><span style="color:var(--brand-l)">双方各得 ¥30 手续费优惠券</span></h1>
           <p style="color:#8ea0cc;font-size:13px;margin-bottom:20px">香港持牌虚拟资产平台 · 1/4/9 号牌 + VATP</p>
           <div style="background:#fff;color:var(--nav);display:inline-block;padding:8px 20px;border-radius:9px;font-weight:800;letter-spacing:3px;font-size:18px">邀请码 87341920 ✓ 已带入</div>
           <div style="margin-top:20px;display:flex;gap:12px;justify-content:center">
@@ -332,7 +350,7 @@
           </div>
           <div style="width:240px;background:var(--blue-bg);border-radius:11px;padding:18px">
             <div class="sec-t" style="margin-top:0;border:none;color:var(--brand-d)">🎁 你被邀请加入</div>
-            <div class="stepline">完成实名认证 → 得 ¥30 新客体验券</div>
+            <div class="stepline">完成实名认证 → 得 ¥30 新客手续费优惠券</div>
             <div class="stepline">好友 Alex 同步获邀请奖励</div>
             <div class="sec-t" style="color:var(--nav)">为何选 bitV</div>
             <div class="stepline">香港持牌 1/4/9 号 + VATP</div>
@@ -505,14 +523,14 @@
           <div style="width:250px">
             <div class="sec-t" style="margin-top:0">🎁 我的奖励资产</div>
             <div class="card">
-              <div style="display:flex;justify-content:space-between"><b style="font-size:12px">手续费体验券</b><span class="chip g">不可提现</span></div>
+              <div style="display:flex;justify-content:space-between"><b style="font-size:12px">手续费优惠券</b><span class="chip g">不可提现</span></div>
               <div style="font-size:10px;color:var(--muted)">¥176 · 交易时自动抵扣</div>
             </div>
             <div class="card" style="opacity:.55">
               <div style="display:flex;justify-content:space-between"><b style="font-size:12px">现金/VA 奖励</b><span class="chip">v2</span></div>
               <div style="font-size:10px;color:var(--muted)">解冻期满后可提（待合规开闸 11.1/11.2）</div>
             </div>
-            <div class="note">v1 奖励为<b>体验券，仅抵扣不可提</b>，规避「分发 VA/现金」合规与账务负担。v2 现金/VA 奖励解冻后方可在此提取。</div>
+            <div class="note">v1 奖励为<b>手续费优惠券，仅抵交易手续费、不可提现</b>（非分发 VA/现金，合规与账务负担最低）。现金券/VA 奖励为 v2，解冻后方可在此提取。体验券属理财线，不用于邀请奖励。</div>
           </div>
         </div>
       </div>
@@ -522,13 +540,14 @@
   <!-- ⑨ 安全设置 -->
   <section class="screen" id="security">
     <h2><span class="tag">Web</span>⑫ 安全 · 设置</h2>
-    <div class="sub">2FA / 登录历史 / 设备 / 注销 / 通知偏好 + 异常邀请风控提示。</div>
+    <div class="sub">Passkey 无密码登录 / 2FA / 登录历史 / 设备 / 注销 / 通知偏好 + 异常邀请风控提示。</div>
     <div class="browser">
       <div class="bbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="url">bitv.com/account/security</span></div>
       <div class="bbody">
         <div class="row" style="gap:30px">
           <div style="flex:1;min-width:320px">
             <div class="sec-t" style="margin-top:0">账户安全</div>
+            <div class="card hl"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px;color:var(--brand-d)">Passkey · 无密码登录</b><div style="font-size:10px;color:var(--muted)">生物识别 / 设备密钥 · 抗钓鱼（域绑定，免短信验证码）<span class="chip" style="margin-left:6px">推荐</span></div></div><button class="btn" style="width:auto;padding:6px 12px;font-size:12px">启用</button></div></div>
             <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">双重验证 2FA</b><div style="font-size:10px;color:var(--muted)">Google Authenticator</div></div><span class="toggle"></span></div></div>
             <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">资金密码</b><div style="font-size:10px;color:var(--muted)">提币/出金校验</div></div><span class="toggle"></span></div></div>
             <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">登录历史 / 设备管理</b><div style="font-size:10px;color:var(--muted)">3 台已信任设备</div></div><span style="color:var(--brand);font-size:12px">查看 ›</span></div></div>
@@ -588,7 +607,7 @@
             <div class="sec-t" style="margin-top:0">召回触达（运营视角）</div>
             <table class="t">
               <tr><th>人群</th><th>触达</th><th>激励</th><th>状态</th></tr>
-              <tr><td>开户未充币</td><td>推送 + 短信</td><td>充币体验券 ¥20</td><td><span class="badge b-ok">进行中</span></td></tr>
+              <tr><td>开户未充币</td><td>推送 + 短信</td><td>手续费优惠券 ¥20</td><td><span class="badge b-ok">进行中</span></td></tr>
               <tr><td>30 日未交易</td><td>邮件</td><td>手续费券 ¥10</td><td><span class="badge b-wait">待发</span></td></tr>
               <tr><td>邀请奖励未领取</td><td>推送</td><td>领取到期提醒</td><td><span class="badge b-ok">进行中</span></td></tr>
             </table>
@@ -686,7 +705,7 @@
           <tr><th>配置项</th><th>值</th></tr>
           <tr><td>触发事件</td><td>开户成功（KYC 通过）</td></tr>
           <tr><td>奖励对象</td><td>双边（邀请者 + 被邀请者）</td></tr>
-          <tr><td>奖励形式</td><td>手续费体验券（v1；现金/VA 灰）</td></tr>
+          <tr><td>奖励形式</td><td>手续费优惠券（v1）；现金券 / VA（v2）；体验券属理财线不在此</td></tr>
           <tr><td>奖励额度</td><td>邀请者 ¥30 / 被邀请者 ¥30</td></tr>
           <tr><td>冻结窗口 hold_window</td><td>T+7</td></tr>
           <tr><td>上限 cap</td><td>单码 500 人 / 活动总预算 ¥50,000</td></tr>
@@ -715,7 +734,7 @@
       <tr><td>6 交易</td><td>现货 / 场外（OTC）/ 永续下单 · 行情 · 订单</td><td>🎁 交易量可选触发</td><td>⑩</td></tr>
       <tr><td>7 持续活跃</td><td>资产总览 · 持仓 · 收益 · 自选 · 通知</td><td>🎁 留存奖励（v2）</td><td>—</td></tr>
       <tr><td>8 权益中心</td><td><b>奖励中心 · 我的邀请 · 券包 · 任务中心</b></td><td>🎁🎁 核心页面</td><td>②③④</td></tr>
-      <tr><td>9 提币 / 出金</td><td>法币出金 · 提币 · 地址管理</td><td>🎁 体验券不可提；现金 / VA 第二版（v2）解冻后提</td><td>⑪</td></tr>
+      <tr><td>9 提币 / 出金</td><td>法币出金 · 提币 · 地址管理</td><td>🎁 手续费优惠券不可提；现金券 / VA 第二版（v2）解冻后提</td><td>⑪</td></tr>
       <tr><td>10 客服 / 帮助</td><td>在线客服 · 工单 · 常见问题 · 活动规则页</td><td>🎁 规则常见问题 · 奖励申诉</td><td>⑬</td></tr>
       <tr><td>11 KOL 专属</td><td>KOL 申请 · 后台 · 多码 · 分渠道数据 · 结算</td><td>🎁🎁 KOL 核心（Web）</td><td>⑮⑯</td></tr>
       <tr><td>12 安全 / 设置</td><td>双重验证（2FA）· 登录历史 · 注销 · 隐私 · 通知偏好</td><td>🎁 异常邀请风控提示</td><td>⑫</td></tr>
